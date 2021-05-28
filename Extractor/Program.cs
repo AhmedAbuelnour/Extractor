@@ -19,7 +19,7 @@ namespace Extractor
     class Auther
     {
         public string FirstName { get; set; }
-        public string LastName { get; set; }
+        public string MiddleName { get; set; }
         public string Surname { get; set; }
         public string Email { get; set; }
         public string Department { get; set; }
@@ -62,7 +62,18 @@ namespace Extractor
                             {
                                 if (NameXmlNode.Name.Equals("forename"))
                                 {
-                                    auther.FirstName = AutherNodes.InnerText;
+                                    if (NameXmlNode.Attributes["type"]?.Value.Equals("first") ?? false)
+                                    {
+                                        auther.FirstName = NameXmlNode.InnerText;
+                                    }
+                                    if (NameXmlNode.Attributes["type"]?.Value.Equals("middle") ?? false)
+                                    {
+                                        auther.MiddleName = NameXmlNode.InnerText;
+                                    }
+                                }
+                                if (NameXmlNode.Name.Equals("surname"))
+                                {
+                                    auther.Surname = NameXmlNode.InnerText;
                                 }
                             }
                         }
@@ -94,26 +105,9 @@ namespace Extractor
 
                     }
 
-                    if (!string.IsNullOrEmpty(auther.Email))
-                        document.Authers.Add(auther);
-                }
-                #endregion
-                #region Publisher & Date
-                XmlNodeList publiserStmt = xmlDoc.GetElementsByTagName("publicationStmt");
-
-                foreach (XmlNode xmlNode in publiserStmt)
-                {
-                    foreach (XmlNode publication in xmlNode.ChildNodes)
-                    {
-                        if (publication.Name.Equals("publisher"))
-                        {
-                            document.Publisher = publication.InnerText;
-                        }
-                        else if (publication.Name.Equals("date"))
-                        {
-                            document.Published = publication.InnerText;
-                        }
-                    }
+                    if (!string.IsNullOrEmpty(auther.FirstName) || !string.IsNullOrEmpty(auther.MiddleName) || !string.IsNullOrEmpty(auther.Surname))
+                        if (document.Authers.Count < 3)
+                            document.Authers.Add(auther);
                 }
                 #endregion
                 #region Thesis Name
@@ -170,7 +164,7 @@ namespace Extractor
                                 header.Content.Add(childItem.InnerText);
                             }
                         }
-                        if (!string.IsNullOrEmpty(header.Title))
+                        if (!string.IsNullOrEmpty(header.Title) && header.Content.Count > 0)
                             document.Headers.Add(header);
                     }
                 }
