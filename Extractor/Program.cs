@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using PdfExtractor;
+using System;
 using System.IO;
-using System.Text.Json;
 using System.Threading.Tasks;
+using ThesisModel;
 
 namespace Extractor
 {
@@ -10,21 +10,32 @@ namespace Extractor
     {
         static async Task Main(string[] args)
         {
-            List<ThesisDocument> documents = new List<ThesisDocument>();
+            ThesisDocumentDbContext thesisDocumentDbContext = new ThesisDocumentDbContext();
+            thesisDocumentDbContext.Database.EnsureCreated();
+            FullTextProcessingUnit fullTextProcessingUnit = new FullTextProcessingUnit();
+            HeaderProcessingUnit headerProcessingUnit = new HeaderProcessingUnit();
             Console.WriteLine("Pass The pdf thesis documents Directory");
+
             string DirectoryPath = Console.ReadLine();
             foreach (var documentPath in Directory.GetFiles(DirectoryPath, "*.pdf"))
             {
-                ThesisDocument document = new ThesisDocument()
+                await fullTextProcessingUnit.SendFileAsync(documentPath);
+                await headerProcessingUnit.SendFileAsync(documentPath);
+                Thesis thesis = new Thesis
                 {
-                    PDFFilePath = documentPath
+                    Title = headerProcessingUnit.GetThesisDocunetTitle(),
+                    PublishedDate = headerProcessingUnit.GetPublishedDate(),
+                    Authors = headerProcessingUnit.GetAuthorsInfo(),
+                    Abstract = fullTextProcessingUnit.GetAbstractInfo(),
+                    Introduction = fullTextProcessingUnit.GetIntroductionInfo(),
+                    FutureWork = fullTextProcessingUnit.GetFutureWorkInfo(),
+                    Keywords = fullTextProcessingUnit.GetKeywords(),
                 };
-                await document.GetHeaderAsync();
-                await document.GetContentAsync();
-                documents.Add(document);
+                thesisDocumentDbContext.Theses.Add(thesis);
             }
-            Console.WriteLine($"Number of parsed doucments:{documents.Count}");
-            await File.WriteAllTextAsync("Output.json", JsonSerializer.Serialize(documents));
+            thesisDocumentDbContext.SaveChanges();
+
+            //await File.WriteAllTextAsync("Output.json", JsonSerializer.Serialize(documents));
         }
     }
 }
