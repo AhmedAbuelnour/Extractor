@@ -34,8 +34,6 @@ namespace Extractor
                 thesisDocumentDbContext.Theses.Add(thesis);
             }
             thesisDocumentDbContext.SaveChanges();
-
-            //await File.WriteAllTextAsync("Output.json", JsonSerializer.Serialize(documents));
         }
     }
 }

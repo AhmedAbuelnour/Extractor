@@ -11,13 +11,15 @@ namespace ThesisModel
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(new SqlConnectionStringBuilder
-            {
-                DataSource = @"localhost\SQLEXPRESS",
-                InitialCatalog = "ThesisDocument",
-                IntegratedSecurity = true
+            //optionsBuilder.UseSqlite(new SqlConnectionStringBuilder
+            //{
+            //    DataSource = @"localhost\SQLEXPRESS",
+            //    InitialCatalog = "ThesisDocument",
+            //    IntegratedSecurity = true
 
-            }.ConnectionString);
+            //}.ConnectionString);
+
+            optionsBuilder.UseSqlite("Data Source=ThesisDocuments.db");
             base.OnConfiguring(optionsBuilder);
         }
     }
