@@ -61,24 +61,6 @@ namespace PdfExtractor
             }
             return string.Empty;
         }
-        public string GetIntroductionInfo()
-        {
-            XmlNodeList Divs = xmlDoc.GetElementsByTagName("div");
-            foreach (XmlNode item in Divs)
-            {
-                foreach (XmlNode childItem in item.ChildNodes)
-                {
-                    if (childItem.Name.Equals("head"))
-                    {
-                        if (childItem.InnerText.Contains("Introduction", StringComparison.OrdinalIgnoreCase) || childItem.InnerText.Contains("Background", StringComparison.OrdinalIgnoreCase) || childItem.InnerText.Contains("Overview", StringComparison.OrdinalIgnoreCase))
-                        {
-                            return string.Join(' ', item.ChildNodes.Cast<XmlNode>().Where(a => a.Name.Equals("p")).Select(a => a.InnerText));
-                        }
-                    }
-                }
-            }
-            return string.Empty;
-        }
         public string GetFutureWorkInfo()
         {
             XmlNodeList Divs = xmlDoc.GetElementsByTagName("div");

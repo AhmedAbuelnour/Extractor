@@ -32,11 +32,10 @@ namespace Extractor
                 }
                 Thesis thesis = new Thesis
                 {
-                    Title = headerProcessingUnit.GetThesisDocunetTitle(),
+                    Title = headerProcessingUnit.GetThesisDocunetTitle() ?? Path.GetFileNameWithoutExtension(documentPath),
                     PublishedDate = headerProcessingUnit.GetPublishedDate(),
                     Authors = headerProcessingUnit.GetAuthorsInfo(),
                     Abstract = fullTextProcessingUnit.GetAbstractInfo(),
-                    Introduction = fullTextProcessingUnit.GetIntroductionInfo(),
                     FutureWork = fullTextProcessingUnit.GetFutureWorkInfo(),
                     Keywords = fullTextProcessingUnit.GetKeywords(),
                 };

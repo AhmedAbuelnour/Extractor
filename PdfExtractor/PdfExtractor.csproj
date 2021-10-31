@@ -5,6 +5,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="RestSharp" Version="106.13.0" />
+    <PackageReference Include="Syncfusion.Pdf.Net.Core" Version="19.3.0.47" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ThesisModel\ThesisModel.csproj" />

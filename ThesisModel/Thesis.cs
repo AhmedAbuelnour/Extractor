@@ -11,8 +11,6 @@ namespace ThesisModel
 
         public string Abstract { get; set; }
 
-        public string Introduction { get; set; }
-
         public string FutureWork { get; set; }
 
         public string PublishedDate { get; set; }
