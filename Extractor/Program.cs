@@ -12,15 +12,24 @@ namespace Extractor
         {
             ThesisDocumentDbContext thesisDocumentDbContext = new ThesisDocumentDbContext();
             thesisDocumentDbContext.Database.EnsureCreated();
-            FullTextProcessingUnit fullTextProcessingUnit = new FullTextProcessingUnit();
-            HeaderProcessingUnit headerProcessingUnit = new HeaderProcessingUnit();
             Console.WriteLine("Pass The pdf thesis documents Directory");
-
             string DirectoryPath = Console.ReadLine();
-            foreach (var documentPath in Directory.GetFiles(DirectoryPath, "*.pdf"))
+            Console.WriteLine("Load from \n 1-API \n 2-Locally");
+            int option = int.Parse(Console.ReadLine());
+            foreach (var documentPath in Directory.GetFiles(DirectoryPath))
             {
-                await fullTextProcessingUnit.SendFileAsync(documentPath);
-                await headerProcessingUnit.SendFileAsync(documentPath);
+                FullTextProcessingUnit fullTextProcessingUnit = new FullTextProcessingUnit();
+                HeaderProcessingUnit headerProcessingUnit = new HeaderProcessingUnit();
+                if (option == 1)
+                {
+                    await fullTextProcessingUnit.SendFileAsync(documentPath);
+                    await headerProcessingUnit.SendFileAsync(documentPath);
+                }
+                else
+                {
+                    fullTextProcessingUnit.LoadTEIFile(documentPath);
+                    headerProcessingUnit.LoadTEIFile(documentPath);
+                }
                 Thesis thesis = new Thesis
                 {
                     Title = headerProcessingUnit.GetThesisDocunetTitle(),
@@ -32,8 +41,8 @@ namespace Extractor
                     Keywords = fullTextProcessingUnit.GetKeywords(),
                 };
                 thesisDocumentDbContext.Theses.Add(thesis);
+                await thesisDocumentDbContext.SaveChangesAsync();
             }
-            thesisDocumentDbContext.SaveChanges();
         }
     }
 }

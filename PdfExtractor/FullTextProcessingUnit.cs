@@ -28,6 +28,10 @@ namespace PdfExtractor
             TEIContent = response.Content;
             xmlDoc.LoadXml(TEIContent);
         }
+        public void LoadTEIFile(string filePath)
+        {
+            xmlDoc.Load(filePath);
+        }
         public ICollection<Keyword> GetKeywords()
         {
             List<Keyword> Keywordlist = new List<Keyword>();
@@ -68,7 +72,7 @@ namespace PdfExtractor
                     {
                         if (childItem.InnerText.Contains("Introduction", StringComparison.OrdinalIgnoreCase) || childItem.InnerText.Contains("Background", StringComparison.OrdinalIgnoreCase) || childItem.InnerText.Contains("Overview", StringComparison.OrdinalIgnoreCase))
                         {
-                            return string.Join(' ',item.ChildNodes.Cast<XmlNode>().Where(a => a.Name.Equals("p")).Select(a => a.InnerText));
+                            return string.Join(' ', item.ChildNodes.Cast<XmlNode>().Where(a => a.Name.Equals("p")).Select(a => a.InnerText));
                         }
                     }
                 }
@@ -78,15 +82,44 @@ namespace PdfExtractor
         public string GetFutureWorkInfo()
         {
             XmlNodeList Divs = xmlDoc.GetElementsByTagName("div");
+
             foreach (XmlNode item in Divs)
             {
-                foreach (XmlNode childItem in item.ChildNodes)
+                // case 1, header equals Future work
+                foreach (XmlNode childItem in item.ChildNodes.Cast<XmlNode>().Where(a => a.Name.Equals("head")))
                 {
-                    if (childItem.Name.Equals("head"))
+                    if (childItem.InnerText.Trim().StartsWith("Future Work", StringComparison.OrdinalIgnoreCase))
+                        return string.Join(' ', item.ChildNodes.Cast<XmlNode>().Where(a => a.Name.Equals("p")).Select(a => a.InnerText));
+                }
+            }
+
+            foreach (XmlNode item in Divs)
+            {
+                // case 2, header equals Conclusion and future work but must have inner text inside
+                foreach (XmlNode childItem in item.ChildNodes.Cast<XmlNode>().Where(a => a.Name.Equals("head")))
+                {
+                    if (childItem.InnerText.Trim().Contains("Conclusion and future work", StringComparison.OrdinalIgnoreCase))
                     {
-                        if (childItem.InnerText.Contains("Future", StringComparison.OrdinalIgnoreCase) || childItem.InnerText.Contains("Summary", StringComparison.OrdinalIgnoreCase))
+                        var items = item.ChildNodes.Cast<XmlNode>().Where(a => a.Name.Equals("p"));
+                        if (items.Any())
                         {
-                            return string.Join(' ', item.ChildNodes.Cast<XmlNode>().Where(a => a.Name.Equals("p")).Select(a => a.InnerText));
+                            return string.Join(' ', items.Select(a => a.InnerText));
+                        }
+                    }
+                }
+            }
+
+            foreach (XmlNode item in Divs)
+            {
+                // case 3, header equals Conclusion but must have inner text inside
+                foreach (XmlNode childItem in item.ChildNodes.Cast<XmlNode>().Where(a => a.Name.Equals("head")))
+                {
+                    if (childItem.InnerText.Trim().StartsWith("Conclusion", true, null))
+                    {
+                        var items = item.ChildNodes.Cast<XmlNode>().Where(a => a.Name.Equals("p"));
+                        if (items.Count() > 0)
+                        {
+                            return string.Join(' ', items.Select(a => a.InnerText));
                         }
                     }
                 }

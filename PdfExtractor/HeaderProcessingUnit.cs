@@ -28,6 +28,11 @@ namespace PdfExtractor
             xmlDoc.LoadXml(TEIContent);
         }
 
+        public void LoadTEIFile(string filePath)
+        {
+            xmlDoc.Load(filePath);
+        }
+
         public string GetPublishedDate()
         {
             XmlNodeList publiserStmt = xmlDoc.GetElementsByTagName("publicationStmt");
