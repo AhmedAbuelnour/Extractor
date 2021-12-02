@@ -51,14 +51,23 @@ namespace PdfExtractor
         }
         public string GetAbstractInfo()
         {
-            XmlNodeList Divs = xmlDoc.GetElementsByTagName("div");
-            foreach (XmlNode item in Divs)
+            // case 1
+            XmlNodeList abstracts = xmlDoc.GetElementsByTagName("teiHeader");
+            foreach (XmlNode item in abstracts.Cast<XmlNode>().Where(a => a.Name.Equals("profileDesc")))
             {
                 if (item.ParentNode.Name.Equals("abstract")) // Abstract
                 {
-                    return item.InnerText;
+                    if (!string.IsNullOrWhiteSpace(item.InnerText))
+                        return item.InnerText;
                 }
             }
+            // case 2
+            XmlNodeList Divs = xmlDoc.GetElementsByTagName("div");
+            foreach (XmlNode item in Divs.Cast<XmlNode>().Where(a => a.Name.Equals("head")))
+            {
+                return item.ChildNodes.Cast<XmlNode>().Where(a => a.Name.Equals("Abstract")).FirstOrDefault().InnerText;
+            }
+
             return string.Empty;
         }
         public string GetFutureWorkInfo()
