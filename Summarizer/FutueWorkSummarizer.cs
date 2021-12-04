@@ -10,7 +10,7 @@ namespace Summarizer
         public FutueWorkSummarizer(string pythonExecutablePath, string scriptPath)
         {
             PythonExecutablePath = pythonExecutablePath ?? "d:/MASTER WORK/After Proposal/Text Summarization Code/venv/Scripts/python.exe";
-            ScriptPath = scriptPath ?? "d:/MASTER WORK/After Proposal/Text Summarization Code/summarizer.py";
+            ScriptPath = scriptPath ?? "d:/MASTER WORK/After Proposal/Text Summarization Code/summy.py";
         }
 
         public async Task<SummarizationResult> GetSummarizationResultAsync(string FutureWork)
