@@ -1,6 +1,7 @@
 ﻿using PdfExtractor;
 using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using ThesisModel;
 
@@ -14,7 +15,7 @@ namespace Extractor
             thesisDocumentDbContext.Database.EnsureCreated();
             Console.WriteLine("Pass The pdf thesis documents Directory");
             string DirectoryPath = Console.ReadLine();
-            Console.WriteLine("Load from \n 1-API \n 2-Locally");
+            Console.WriteLine("Load from \n 1-Only have PDFs and want to process them online \n 2-Having TEI files Locally");
             int option = int.Parse(Console.ReadLine());
             foreach (var documentPath in Directory.GetFiles(DirectoryPath))
             {
@@ -37,7 +38,7 @@ namespace Extractor
                     Authors = headerProcessingUnit.GetAuthorsInfo(),
                     Abstract = fullTextProcessingUnit.GetAbstractInfo(),
                     FutureWork = fullTextProcessingUnit.GetFutureWorkInfo(),
-                    Keywords = fullTextProcessingUnit.GetKeywords(),
+                    Keywords = fullTextProcessingUnit.GetKeywords().ToList(),
                 };
                 thesisDocumentDbContext.Theses.Add(thesis);
                 await thesisDocumentDbContext.SaveChangesAsync();

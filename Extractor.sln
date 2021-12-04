@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ThesisModel", "ThesisModel\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PdfExtractor", "PdfExtractor\PdfExtractor.csproj", "{7FB95F18-F10B-497B-9175-EB8CFEECC6FE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PretrainedModelPicker", "ModelPicker\PretrainedModelPicker.csproj", "{B0AE08AD-D2FB-4860-BF7F-D0E9738EDABB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PretrainedModelPicker", "ModelPicker\PretrainedModelPicker.csproj", "{B0AE08AD-D2FB-4860-BF7F-D0E9738EDABB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Summarizer", "Summarizer\Summarizer.csproj", "{9AF17878-EF06-4747-BD23-E3ED959E9548}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{B0AE08AD-D2FB-4860-BF7F-D0E9738EDABB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B0AE08AD-D2FB-4860-BF7F-D0E9738EDABB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B0AE08AD-D2FB-4860-BF7F-D0E9738EDABB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9AF17878-EF06-4747-BD23-E3ED959E9548}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9AF17878-EF06-4747-BD23-E3ED959E9548}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9AF17878-EF06-4747-BD23-E3ED959E9548}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9AF17878-EF06-4747-BD23-E3ED959E9548}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

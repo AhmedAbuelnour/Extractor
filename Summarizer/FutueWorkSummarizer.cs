@@ -1,18 +1,19 @@
 ﻿using System.Diagnostics;
+using System.Text.Json;
 
-namespace PretrainedModelPicker
+namespace Summarizer
 {
-    public class ModelPicker
+    public class FutueWorkSummarizer
     {
         public string PythonExecutablePath { get; private set; }
         public string ScriptPath { get; private set; }
-
-        public ModelPicker(string pythonExecutablePath, string scriptPath)
+        public FutueWorkSummarizer(string pythonExecutablePath, string scriptPath)
         {
             PythonExecutablePath = pythonExecutablePath ?? "d:/MASTER WORK/After Proposal/Text Summarization Code/venv/Scripts/python.exe";
-            ScriptPath = scriptPath ?? "d:/MASTER WORK/After Proposal/Text Summarization Code/picker.py";
+            ScriptPath = scriptPath ?? "d:/MASTER WORK/After Proposal/Text Summarization Code/summarizer.py";
         }
-        public async Task<string> GetModelAsync(string Abstract, string Keywords,string SCIBERT, string RoBERTa)
+
+        public async Task<SummarizationResult> GetSummarizationResultAsync(string FutureWork)
         {
             ProcessStartInfo psi = new()
             {
@@ -21,11 +22,11 @@ namespace PretrainedModelPicker
                 CreateNoWindow = true,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
-                Arguments = string.Format("\"{0}\" \"{1}\" \"{2}\" \"{3}\" \"{4}\"", ScriptPath, Abstract,Keywords, SCIBERT, RoBERTa)
+                Arguments = string.Format("\"{0}\" \"{1}\"", ScriptPath, FutureWork)
             };
             using Process process = Process.Start(psi);
             using StreamReader reader = process.StandardOutput;
-            return await reader.ReadToEndAsync();
+            return JsonSerializer.Deserialize<SummarizationResult>(await reader.ReadToEndAsync());
         }
     }
 }

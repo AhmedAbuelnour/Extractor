@@ -32,22 +32,19 @@ namespace PdfExtractor
         {
             xmlDoc.Load(filePath);
         }
-        public ICollection<Keyword> GetKeywords()
+        public IEnumerable<Keyword> GetKeywords()
         {
-            List<Keyword> Keywordlist = new List<Keyword>();
-            XmlNodeList keywords = xmlDoc.GetElementsByTagName("keywords");
-            foreach (XmlNode keyword in keywords)
+            foreach (XmlNode keyword in xmlDoc.GetElementsByTagName("keywords"))
             {
                 foreach (XmlNode term in keyword.ChildNodes)
                 {
                     if (!string.IsNullOrWhiteSpace(term.InnerText))
-                        Keywordlist.Add(new Keyword
+                        yield return new Keyword
                         {
                             Term = term.InnerText
-                        });
+                        };
                 }
             }
-            return Keywordlist;
         }
         public string GetAbstractInfo()
         {
@@ -67,7 +64,6 @@ namespace PdfExtractor
             {
                 return item.ChildNodes.Cast<XmlNode>().Where(a => a.Name.Equals("Abstract")).FirstOrDefault().InnerText;
             }
-
             return string.Empty;
         }
         public string GetFutureWorkInfo()
