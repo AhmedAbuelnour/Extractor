@@ -5,8 +5,8 @@ namespace ThesisModel
 {
     public class ThesisDocumentDbContext :DbContext
     {
+        public DbSet<SummarizedThesis> SummarizedThesis { get; set; }
         public DbSet<Thesis> Theses { get; set; }
-        public DbSet<Keyword> Keywords { get; set; }
         public DbSet<Author> Authors { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -19,7 +19,7 @@ namespace ThesisModel
 
             //}.ConnectionString);
 
-            optionsBuilder.UseSqlite("Data Source=ThesisDocuments.db");
+            optionsBuilder.UseSqlite("Data Source=ThesisDocument.db");
             base.OnConfiguring(optionsBuilder);
         }
     }

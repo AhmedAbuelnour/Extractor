@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Text.Json;
 
 namespace PretrainedModelPicker
 {
@@ -9,10 +10,10 @@ namespace PretrainedModelPicker
 
         public ModelPicker(string pythonExecutablePath, string scriptPath)
         {
-            PythonExecutablePath = pythonExecutablePath ?? "d:/MASTER WORK/After Proposal/Text Summarization Code/venv/Scripts/python.exe";
-            ScriptPath = scriptPath ?? "d:/MASTER WORK/After Proposal/Text Summarization Code/picker.py";
+            PythonExecutablePath = pythonExecutablePath;
+            ScriptPath = scriptPath;
         }
-        public async Task<string> GetModelAsync(string Abstract, string Keywords,string SCIBERT, string RoBERTa)
+        public async Task<PickerResult> GetModelAsync(string Abstract, string SCIBERT, string RoBERTa)
         {
             ProcessStartInfo psi = new()
             {
@@ -21,11 +22,11 @@ namespace PretrainedModelPicker
                 CreateNoWindow = true,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
-                Arguments = string.Format("\"{0}\" \"{1}\" \"{2}\" \"{3}\" \"{4}\"", ScriptPath, Abstract,Keywords, SCIBERT, RoBERTa)
+                Arguments = string.Format("\"{0}\" \"{1}\" \"{2}\" \"{3}\"", ScriptPath, Abstract, SCIBERT, RoBERTa)
             };
             using Process process = Process.Start(psi);
             using StreamReader reader = process.StandardOutput;
-            return await reader.ReadToEndAsync();
+            return JsonSerializer.Deserialize<PickerResult>(await reader.ReadToEndAsync());
         }
     }
 }

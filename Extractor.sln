@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PdfExtractor", "PdfExtracto
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PretrainedModelPicker", "ModelPicker\PretrainedModelPicker.csproj", "{B0AE08AD-D2FB-4860-BF7F-D0E9738EDABB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Summarizer", "Summarizer\Summarizer.csproj", "{9AF17878-EF06-4747-BD23-E3ED959E9548}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Summarizer", "Summarizer\Summarizer.csproj", "{9AF17878-EF06-4747-BD23-E3ED959E9548}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

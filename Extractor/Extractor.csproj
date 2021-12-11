@@ -8,6 +8,7 @@
   <ItemGroup>
     <ProjectReference Include="..\ModelPicker\PretrainedModelPicker.csproj" />
     <ProjectReference Include="..\PdfExtractor\PdfExtractor.csproj" />
+    <ProjectReference Include="..\Summarizer\Summarizer.csproj" />
     <ProjectReference Include="..\ThesisModel\ThesisModel.csproj" />
   </ItemGroup>
 

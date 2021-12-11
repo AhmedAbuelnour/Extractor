@@ -9,8 +9,8 @@ namespace Summarizer
         public string ScriptPath { get; private set; }
         public FutueWorkSummarizer(string pythonExecutablePath, string scriptPath)
         {
-            PythonExecutablePath = pythonExecutablePath ?? "d:/MASTER WORK/After Proposal/Text Summarization Code/venv/Scripts/python.exe";
-            ScriptPath = scriptPath ?? "d:/MASTER WORK/After Proposal/Text Summarization Code/summy.py";
+            PythonExecutablePath = pythonExecutablePath;
+            ScriptPath = scriptPath;
         }
 
         public async Task<SummarizationResult> GetSummarizationResultAsync(string FutureWork)
@@ -24,9 +24,13 @@ namespace Summarizer
                 RedirectStandardError = true,
                 Arguments = string.Format("\"{0}\" \"{1}\"", ScriptPath, FutureWork)
             };
-            using Process process = Process.Start(psi);
-            using StreamReader reader = process.StandardOutput;
-            return JsonSerializer.Deserialize<SummarizationResult>(await reader.ReadToEndAsync());
+            using (Process process = Process.Start(psi))
+            {
+                using (StreamReader reader = process.StandardOutput)
+                {
+                    return JsonSerializer.Deserialize<SummarizationResult>(await reader.ReadToEndAsync());
+                }
+            }
         }
     }
 }
