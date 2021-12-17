@@ -1,6 +1,7 @@
 ﻿using RestSharp;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml;
@@ -27,6 +28,7 @@ namespace PdfExtractor
             IRestResponse response = await Client.ExecuteAsync(Request);
             TEIContent = response.Content;
             xmlDoc.LoadXml(TEIContent);
+            await File.WriteAllTextAsync($"{Path.GetDirectoryName(pdfFilePath)}/{Path.GetFileNameWithoutExtension(pdfFilePath)}.tei.xml", TEIContent);
         }
         public void LoadTEIFile(string filePath)
         {
