@@ -12,7 +12,7 @@ namespace Embedder
             PythonExecutablePath = pythonExecutablePath;
             ScriptPath = scriptPath;
         }
-        public async Task<string> GetEmbeddingAsync(string sentence)
+        public async Task<string> GetEmbeddingPathAsync(string sentence, string directoryToSave, string thesisTitle)
         {
             ProcessStartInfo psi = new()
             {
@@ -21,7 +21,7 @@ namespace Embedder
                 CreateNoWindow = true,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
-                Arguments = string.Format("\"{0}\" \"{1}\"", ScriptPath, sentence)
+                Arguments = string.Format("\"{0}\" \"{1}\" \"{2}\" \"{3}\"", ScriptPath, sentence, directoryToSave, thesisTitle)
             };
             using Process process = Process.Start(psi);
             using StreamReader reader = process.StandardOutput;

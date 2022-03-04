@@ -22,7 +22,7 @@ namespace Extractor
             string pythonSBertPath = @"D:\MASTER WORK\After Proposal\Text Summarization Code\embedder.py";
             string pythonSimilaritytPath = @"D:\MASTER WORK\After Proposal\Text Summarization Code\embeding_similarity.py";
 
-            Console.WriteLine("Do you want to perform \n 1- Search  \n 2- PreProcessing Process?");
+            Console.WriteLine("Do you want to perform \n 1- Search  \n 2- Pre-processing");
 
             int performPick = int.Parse(Console.ReadLine());
 
@@ -38,10 +38,13 @@ namespace Extractor
         static async Task Search(string pythonPath, string embedderPath, string embeddingSimilarityPath)
         {
             Console.WriteLine("Enter your search keywords");
-            string keywords = Console.ReadLine();
+            string keywords = Console.ReadLine().Trim();
+
+            Console.WriteLine("Pass the directoy which will contain the temp embeddings for the keywords");
+            string embeddingDirctory = Console.ReadLine().Trim();
 
             Console.WriteLine("Obtaining Embeddings for your keywords... (loading)");
-            string keywordsEmbeddings = await new SEmbedder(pythonPath, embedderPath).GetEmbeddingAsync(keywords);
+            string keywordsEmbeddings = await new SEmbedder(pythonPath, embedderPath).GetEmbeddingPathAsync(keywords, embeddingDirctory, Path.GetRandomFileName());
             Console.WriteLine("Obtaining Embeddings for your keywords... (done)");
 
             Console.WriteLine("Enter top N selection");
@@ -62,7 +65,7 @@ namespace Extractor
                 embeddingResults.Add(new EmbeddingResult
                 {
                     ThesisId = thesis.Id,
-                    Score = await embeddingSimilarityCalculator.GetEmbeddingScoreAsync(keywordsEmbeddings, thesis.Embedding),
+                    Score = await embeddingSimilarityCalculator.GetEmbeddingScoreAsync(keywordsEmbeddings.Trim(), thesis.EmbeddingPath.Trim()),
                 });
             }
 
@@ -71,7 +74,7 @@ namespace Extractor
             foreach (var item in topNembeddingResults)
             {
                 Console.WriteLine("----------------------------------------------");
-                Console.WriteLine($"Thesis Id: {item.ThesisId} || " + thesisDocumentDbContext.Theses.Where(a => a.Id == item.ThesisId).Include(a => a.SummarizedThesisId).SingleOrDefault().SummarizedThesis.SummarizedFuturWork);
+                Console.WriteLine($"Thesis Id: {item.ThesisId} || " + thesisDocumentDbContext.Theses.Where(a => a.Id == item.ThesisId).Include(a => a.SummarizedThesis).SingleOrDefault().SummarizedThesis.SummarizedFuturWork);
                 Console.WriteLine("----------------------------------------------");
             }
 
@@ -81,7 +84,7 @@ namespace Extractor
 
                 int selectedThesisDocment = int.Parse(Console.ReadLine());
 
-                string embeddingOfSelectedThesisDocument = thesisDocumentDbContext.Theses.SingleOrDefault(a => a.Id == selectedThesisDocment).Embedding;
+                string embeddingOfSelectedThesisDocument = thesisDocumentDbContext.Theses.SingleOrDefault(a => a.Id == selectedThesisDocment).EmbeddingPath;
 
                 List<EmbeddingResult> subEmbeddingResults = new List<EmbeddingResult>();
 
@@ -92,7 +95,7 @@ namespace Extractor
                     subEmbeddingResults.Add(new EmbeddingResult
                     {
                         ThesisId = thesis.Id,
-                        Score = await embeddingSimilarityCalculator.GetEmbeddingScoreAsync(embeddingOfSelectedThesisDocument, thesis.Embedding),
+                        Score = await embeddingSimilarityCalculator.GetEmbeddingScoreAsync(embeddingOfSelectedThesisDocument.Trim(), thesis.EmbeddingPath.Trim()),
                     });
                 }
 
@@ -101,11 +104,11 @@ namespace Extractor
                 foreach (var item in topsubeEmbeddingResults)
                 {
                     Console.WriteLine("----------------------------------------------");
-                    Console.WriteLine($"Thesis Id: {item.ThesisId} || " + thesisDocumentDbContext.Theses.Where(a => a.Id == item.ThesisId).Include(a => a.SummarizedThesisId).SingleOrDefault().SummarizedThesis.SummarizedFuturWork);
+                    Console.WriteLine($"Thesis Id: {item.ThesisId} || " + thesisDocumentDbContext.Theses.Where(a => a.Id == item.ThesisId).Include(a => a.SummarizedThesis).SingleOrDefault().SummarizedThesis.SummarizedFuturWork);
                     Console.WriteLine("----------------------------------------------");
                 }
 
-                Console.WriteLine("Do you want to exit? (y/n");
+                Console.WriteLine("Do you want to exit? (y/n)");
                 char yesOrNo = char.Parse(Console.ReadLine());
                 if (yesOrNo == 'y' || yesOrNo == 'Y') break;
             }
@@ -121,6 +124,10 @@ namespace Extractor
             thesisDocumentDbContext.Database.EnsureCreated();
             Console.WriteLine("Pass The pdf thesis documents Directory");
             string DirectoryPath = Console.ReadLine();
+
+            Console.WriteLine("Pass the directoy which will contain the embeddings");
+            string embeddingDirctory = Console.ReadLine();
+
             Console.WriteLine("Load from \n 1-Only have PDFs and want to process them online \n 2-Having TEI files Locally");
             int option = int.Parse(Console.ReadLine());
 
@@ -169,7 +176,7 @@ namespace Extractor
                 }
                 try
                 {
-                    thesis.Embedding = await embedder.GetEmbeddingAsync(thesis.Abstract);
+                    thesis.EmbeddingPath = await embedder.GetEmbeddingPathAsync(thesis.Abstract, embeddingDirctory, thesis.Title);
                     SummarizationResult summarizationResult = await futueWorkSummarizer.GetSummarizationResultAsync(thesis.FutureWork);
                     if (string.IsNullOrWhiteSpace(summarizationResult.SCIBert) || string.IsNullOrWhiteSpace(summarizationResult.RoBERTa))
                     {

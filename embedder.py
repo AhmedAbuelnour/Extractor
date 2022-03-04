@@ -1,4 +1,5 @@
 # Import  Sentence Transformer from HuggingFace
+import numpy as np
 from sentence_transformers import SentenceTransformer
 import sys
 
@@ -7,7 +8,15 @@ import sys
 model = SentenceTransformer('msmarco-distilbert-base-dot-prod-v3')
 ###############################################################
 sentence = sys.argv[1]
-# SCIBert Summarizer
-print(embeddings = model.encode(sentence))
+directoryToSave = sys.argv[2]
+thesisName = sys.argv[3]
+
+fullPath = directoryToSave + "/" + thesisName + ".npy"
+# save file
+embeddingResult = model.encode(sentence)
+
+np.save(fullPath, embeddingResult)
+
+print(fullPath)
 
 
