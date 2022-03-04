@@ -56,15 +56,16 @@ namespace Extractor
                 }
                 Thesis thesis = new Thesis
                 {
-                    Title = fullTextProcessingUnit.GetThesisDocunetTitle(),
+
+                    Title = Path.GetFileNameWithoutExtension(documentPath),
                     FutureWork = fullTextProcessingUnit.GetFutureWorkInfo(),
                     PublishedDate = fullTextProcessingUnit.GetPublishedDate(),
-                    Abstract = fullTextProcessingUnit.GetAbstractInfo(),
+                    Abstract = fullTextProcessingUnit.GetAbstractInfo().Trim(),
                 };
-                if (thesis.Abstract == string.Empty && thesis.Title == string.Empty)
+                if (thesis.Abstract == string.Empty || thesis.FutureWork == string.Empty || thesis.FutureWork.Length < 25)
                 {
                     Failed++;
-                    Console.WriteLine("Failed");
+                    Console.WriteLine(thesis.Abstract == String.Empty ? $"Abstract is empty: {thesis.Title}" : $"future work is empty: {thesis.Title}");
                     continue;
                 }
                 try
@@ -73,14 +74,14 @@ namespace Extractor
                     if(string.IsNullOrWhiteSpace(summarizationResult.SCIBert) || string.IsNullOrWhiteSpace(summarizationResult.RoBERTa))
                     {
                         Failed++;
-                        Console.WriteLine("Failed");
+                        Console.WriteLine("summarization is empty");
                         continue;
                     }
-                    PickerResult pickerResult = await modelPicker.GetModelAsync(thesis.Abstract == string.Empty ? thesis.Title : thesis.Abstract, summarizationResult.SCIBert, summarizationResult.RoBERTa);
+                    PickerResult pickerResult = await modelPicker.GetModelAsync(thesis.Abstract, summarizationResult.SCIBert, summarizationResult.RoBERTa);
                     if (string.IsNullOrWhiteSpace(pickerResult.Model) || string.IsNullOrWhiteSpace(pickerResult.Keywords))
                     {
                         Failed++;
-                        Console.WriteLine("Failed");
+                        Console.WriteLine("model picker is empty");
                         continue;
                     }
                     thesis.SummarizedThesis = new SummarizedThesis

@@ -52,19 +52,21 @@ namespace PdfExtractor
         {
             // case 1
             XmlNodeList abstracts = xmlDoc.GetElementsByTagName("teiHeader");
-            foreach (XmlNode item in abstracts.Cast<XmlNode>().Where(a => a.Name.Equals("profileDesc")))
+            foreach (XmlNode item in abstracts)
             {
-                if (item.ParentNode.Name.Equals("abstract")) // Abstract
+                foreach (var child in item.ChildNodes.Cast<XmlNode>().Where(a => a.Name.Equals("profileDesc")))
                 {
-                    if (!string.IsNullOrWhiteSpace(item.InnerText))
-                        return item.InnerText;
+                    string extractedAbstract = child.ChildNodes.Cast<XmlNode>().Where(a => a.Name.Equals("abstract")).Select(a => a.InnerText).FirstOrDefault();
+                    if (!string.IsNullOrWhiteSpace(extractedAbstract))
+                        return extractedAbstract;
                 }
+
             }
             // case 2
             XmlNodeList Divs = xmlDoc.GetElementsByTagName("div");
             foreach (XmlNode item in Divs.Cast<XmlNode>().Where(a => a.Name.Equals("head")))
             {
-                return item.ChildNodes.Cast<XmlNode>().Where(a => a.Name.Equals("Abstract")).FirstOrDefault().InnerText;
+                return item.ChildNodes.Cast<XmlNode>().Where(a => a.Name.Equals("Abstract", StringComparison.OrdinalIgnoreCase)).FirstOrDefault().InnerText;
             }
             // case 3 , fall back to introduction
             foreach (XmlNode item in Divs)
