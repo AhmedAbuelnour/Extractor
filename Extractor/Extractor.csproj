@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Embedder\Embedder.csproj" />
     <ProjectReference Include="..\ModelPicker\PretrainedModelPicker.csproj" />
     <ProjectReference Include="..\PdfExtractor\PdfExtractor.csproj" />
     <ProjectReference Include="..\Summarizer\Summarizer.csproj" />

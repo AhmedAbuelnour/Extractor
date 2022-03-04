@@ -9,7 +9,9 @@ namespace ThesisModel
         public string FutureWork { get; set; }
         public string PublishedDate { get; set; }
         public string Abstract { get; set; }
+        public string Embedding { get; set; }
         public int SummarizedThesisId { get; set; }
-        [ForeignKey(nameof(SummarizedThesisId))] public SummarizedThesis SummarizedThesis { get; set; }
+        [ForeignKey(nameof(SummarizedThesisId))]
+        public SummarizedThesis SummarizedThesis { get; set; }
     }
 }
