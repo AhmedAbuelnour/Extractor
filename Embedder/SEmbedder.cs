@@ -21,7 +21,7 @@ namespace Embedder
                 CreateNoWindow = true,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
-                Arguments = string.Format("\"{0}\" \"{1}\" \"{2}\" \"{3}\"", ScriptPath, sentence, directoryToSave, thesisTitle)
+                Arguments = string.Format("\"{0}\" \"{1}\" \"{2}\" \"{3}\"", ScriptPath, sentence.Replace("\"", String.Empty), directoryToSave, thesisTitle)
             };
             using Process process = Process.Start(psi);
             using StreamReader reader = process.StandardOutput;

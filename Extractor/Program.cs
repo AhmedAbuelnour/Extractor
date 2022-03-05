@@ -176,7 +176,7 @@ namespace Extractor
                 }
                 try
                 {
-                    thesis.EmbeddingPath = await embedder.GetEmbeddingPathAsync(thesis.Abstract, embeddingDirctory, thesis.Title);
+                    thesis.EmbeddingPath = (await embedder.GetEmbeddingPathAsync(thesis.Abstract, embeddingDirctory, thesis.Title)).Trim();
                     SummarizationResult summarizationResult = await futueWorkSummarizer.GetSummarizationResultAsync(thesis.FutureWork);
                     if (string.IsNullOrWhiteSpace(summarizationResult.SCIBert) || string.IsNullOrWhiteSpace(summarizationResult.RoBERTa))
                     {
